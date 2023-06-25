@@ -154,13 +154,6 @@ data "aws_ami" "latest-amazon-linux-image" {
     }
 }
 
-output "aws_ami_id" {
-    value = data.aws_ami.latest-amazon-linux-image.id
-}
-
-output "ec2_Ipaddress" {
-    value = aws_instance.my-app-server.public_ip
-}
 
 resource "aws_key_pair" "ssh-key" {
   key_name = "terraform-key"
@@ -180,9 +173,17 @@ resource "aws_instance" "my-app-server" {
     key_name = aws_key_pair.ssh-key.key_name
 
 
-    user_data = file("entry_point.sh")
+    user_data = file("entry-point.sh")
 
     tags = {
         Name = "${var.env_prefix}-server"
     }
+}
+
+output "aws_ami_id" {
+    value = data.aws_ami.latest-amazon-linux-image.id
+}
+
+output "ec2_Ipaddress" {
+    value = aws_instance.my-app-server.public_ip
 }
